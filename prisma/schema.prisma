@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Tier {
+  BRONZE
+  SILVER
+  GOLD
+  DIAMOND
+  MASTER
+}
+
+model User {
+  userSeq String @id @unique @map("user_seq")
+  rank    Rank?
+
+  @@map("BK_MB_USER")
+}
+
+model Rank {
+  id      Int    @id @unique @default(autoincrement())
+  tier    Tier   @default(BRONZE)
+  score   Int    @default(0)
+  reBirth Int    @default(0) @map("re_birth")
+  userSeq String @unique @map("user_seq")
+  user    User   @relation(fields: [userSeq], references: [userSeq])
+
+  @@map("BK_MB_RANK")
+}
