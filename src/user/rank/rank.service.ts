@@ -11,11 +11,22 @@ export class RankService {
       this.prisma.rank.findUnique({ where: { userSeq: dto.userSeq } }),
     ).pipe(
       map((data) => {
-        if (!data) this.initUserRank(dto);
+        if (!data)
+          return this.prisma.rank.create({
+            data: { userSeq: dto.userSeq },
+            select: {
+              tier: true,
+              score: true,
+              reBirth: true,
+            },
+          });
+        else
+          return {
+            tier: data.tier,
+            score: data.score,
+            reBirth: data.reBirth,
+          };
       }),
     );
-  }
-  private initUserRank(dto: { userSeq: string }) {
-    return from(this.prisma.rank.create({ data: { userSeq: dto.userSeq } }));
   }
 }
