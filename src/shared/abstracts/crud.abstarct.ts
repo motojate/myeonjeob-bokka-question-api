@@ -1,7 +1,9 @@
 import { Observable } from 'rxjs';
 
-export abstract class CrudService<T> {
-  abstract getAll(): Promise<T[]>;
-  abstract getUnique(seq: string): Promise<T>;
-  abstract create(dto: Partial<T>): Observable<T>;
+export abstract class CrudService<TModel, TCreateInput, TUpdateInput> {
+  abstract create(dto: TCreateInput): Observable<TModel>;
+  abstract findAll(): Observable<TModel[]>;
+  abstract findOne(id: number): Observable<TModel | null>;
+  abstract update(id: number, dto: TUpdateInput): Observable<TModel>;
+  abstract delete(id: number): Observable<TModel>;
 }
