@@ -27,3 +27,17 @@ model Rank {
 
   @@map("BK_MB_RANK")
 }
+
+model QuestionLearningManage {
+  userSeq     String   @map("user_seq")
+  questionSeq String   @map("question_seq")
+  score       Int      @default(0)
+  retryCount  Int      @default(0) @map("retry_cnt")
+  isShow      Boolean  @default(false) @map("is_show")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([userSeq, questionSeq], name: "historySeq")
+  @@index([userSeq])
+  @@map("BK_MB_QUESTION_LEARNING_Manage")
+}
