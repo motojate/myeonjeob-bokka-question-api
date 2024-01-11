@@ -18,12 +18,25 @@ enum Tier {
   MASTER
 }
 
+model Freind {
+  friendUserSeq String   @map("friend_user_seq")
+  userSeq       String   @map("user_seq")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([userSeq, friendUserSeq], name: "friendSeq")
+  @@index([userSeq])
+  @@map("BK_MB_FRIEND")
+}
+
 model Rank {
-  id      Int    @id @unique @default(autoincrement())
-  tier    Tier   @default(BRONZE)
-  score   Int    @default(0)
-  reBirth Int    @default(0) @map("re_birth")
-  userSeq String @unique @map("user_seq")
+  id        Int      @id @unique @default(autoincrement())
+  tier      Tier     @default(BRONZE)
+  score     Int      @default(0)
+  reBirth   Int      @default(0) @map("re_birth")
+  userSeq   String   @unique @map("user_seq")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("BK_MB_RANK")
 }
