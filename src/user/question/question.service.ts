@@ -26,7 +26,6 @@ export class QuestionService {
           count: count,
           questionSeqList: questionSeqList,
         };
-        console.log(dto);
         return this.getQuestionFromQuestionApi(dto);
       }),
     );
