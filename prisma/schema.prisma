@@ -18,6 +18,16 @@ enum Tier {
   MASTER
 }
 
+model User {
+  userSeq      String   @id @unique @map("user_seq")
+  name         String?
+  isFirstVisit Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("BK_MB_USER")
+}
+
 model Friend {
   friendUserSeq String   @map("friend_user_seq")
   userSeq       String   @map("user_seq")
