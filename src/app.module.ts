@@ -6,6 +6,7 @@ import { RankModule } from './user/rank/rank.module';
 import { ConfigModule } from '@nestjs/config';
 import { HistoryModule } from './user/question/manage/manage.module';
 import { QuestionModule } from './user/question/question.module';
+import { FriendModule } from './user/friend/friend.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { QuestionModule } from './user/question/question.module';
     }),
     HistoryModule,
     QuestionModule,
+    FriendModule,
   ],
   controllers: [AppController],
   providers: [AppService],
