@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HistoryModule } from './user/question/manage/manage.module';
 import { QuestionModule } from './user/question/question.module';
 import { FriendModule } from './user/friend/friend.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FriendModule } from './user/friend/friend.module';
     HistoryModule,
     QuestionModule,
     FriendModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
