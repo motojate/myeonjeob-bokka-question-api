@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Observable, from } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { HeaderToken } from '../types/common.type';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
@@ -16,22 +17,25 @@ export class TokenGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return this.validateToken(request.headers).pipe(
+    const { access_token: accessToken, refresh_token: refreshToken } =
+      request.cookies;
+    const tokens: HeaderToken = {
+      accessToken,
+      refreshToken,
+    };
+    return from(this.validateToken(tokens)).pipe(
       map((userSeq) => {
+        console.log(userSeq);
         request.userSeq = userSeq;
+
         return true;
       }),
     );
   }
 
-  private validateToken(headers: Record<string, string>): Observable<boolean> {
+  private async validateToken(tokens: HeaderToken): Promise<boolean> {
     const url = this.configService.get<string>('LOCAL_JWT_CHECK_URL');
 
-    return from(axios.get(url, { headers, withCredentials: true })).pipe(
-      map((response) => response.data),
-      catchError((err) => {
-        throw new HttpException(err.response.data, err.response.status);
-      }),
-    );
+    return axios.post(url, { tokens });
   }
 }

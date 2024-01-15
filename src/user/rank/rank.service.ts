@@ -7,25 +7,16 @@ export class RankService {
   constructor(private readonly prisma: PrismaService) {}
 
   findRank(dto: { userSeq: string }) {
+    console.log(dto);
     return from(
       this.prisma.rank.findUnique({ where: { userSeq: dto.userSeq } }),
     ).pipe(
       map((data) => {
-        if (!data)
-          return this.prisma.rank.create({
-            data: { userSeq: dto.userSeq },
-            select: {
-              tier: true,
-              score: true,
-              reBirth: true,
-            },
-          });
-        else
-          return {
-            tier: data.tier,
-            score: data.score,
-            reBirth: data.reBirth,
-          };
+        return {
+          tier: data.tier,
+          score: data.score,
+          reBirth: data.reBirth,
+        };
       }),
     );
   }

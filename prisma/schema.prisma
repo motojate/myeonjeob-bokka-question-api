@@ -18,12 +18,22 @@ enum Tier {
   MASTER
 }
 
+enum Status {
+  Y
+  W
+  N
+  D
+}
+
 model User {
-  userSeq      String   @id @unique @map("user_seq")
-  name         String?
-  isFirstVisit Boolean  @default(true)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  userSeq                 String                   @id @unique @map("user_seq")
+  name                    String?
+  isFirstVisit            Boolean                  @default(true)
+  status                  Status                   @default(Y)
+  createdAt               DateTime                 @default(now()) @map("created_at")
+  updatedAt               DateTime                 @updatedAt @map("updated_at")
+  rank                    Rank?
+  questionLearningManages QuestionLearningManage[]
 
   @@map("BK_MB_USER")
 }
@@ -44,6 +54,7 @@ model Rank {
   tier      Tier     @default(BRONZE)
   score     Int      @default(0)
   reBirth   Int      @default(0) @map("re_birth")
+  user      User     @relation(fields: [userSeq], references: [userSeq], onDelete: Cascade)
   userSeq   String   @unique @map("user_seq")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -59,6 +70,7 @@ model QuestionLearningManage {
   isShow      Boolean  @default(false) @map("is_show")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userSeq], references: [userSeq])
 
   @@unique([userSeq, questionSeq], name: "historySeq")
   @@index([userSeq])

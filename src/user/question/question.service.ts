@@ -33,6 +33,7 @@ export class QuestionService {
 
   getReviewQuestion(count: number, userSeq: string) {
     const getReviewQuestionCount = Math.ceil(count * 0.6);
+    console.log(getReviewQuestionCount);
     return from(
       this.prisma.questionLearningManage.findMany({
         where: {
