@@ -1,12 +1,7 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { Observable, from } from 'rxjs';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Observable, from, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HeaderToken } from '../types/common.type';
 
@@ -24,18 +19,18 @@ export class TokenGuard implements CanActivate {
       refreshToken,
     };
     return from(this.validateToken(tokens)).pipe(
-      map((userSeq) => {
-        console.log(userSeq);
-        request.userSeq = userSeq;
-
+      map((result) => {
+        const { data } = result;
+        request.userSeq = data;
         return true;
       }),
+      catchError((e) => throwError(() => e)),
     );
   }
 
-  private async validateToken(tokens: HeaderToken): Promise<boolean> {
+  private async validateToken(tokens: HeaderToken) {
     const url = this.configService.get<string>('LOCAL_JWT_CHECK_URL');
 
-    return axios.post(url, { tokens });
+    return axios.post<string>(url, { tokens });
   }
 }
