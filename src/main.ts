@@ -2,13 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import * as cookieParser from 'cookie-parser';
 import { LoggingInterceptor } from 'src/shared/interceptors/logging.interceptor';
-import { GlobalRequestExceptionFilter } from 'src/shared/filters/global-request-exception.filter';
+import { GlobalHttpExceptionFilter } from 'src/shared/filters/global-http-exception.filter';
+import { GlobalAxiosExceptionFilter } from 'src/shared/filters/global-axios-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new LoggingInterceptor());
-  app.useGlobalFilters(new GlobalRequestExceptionFilter());
+  app.useGlobalFilters(new GlobalHttpExceptionFilter());
+  app.useGlobalFilters(new GlobalAxiosExceptionFilter());
   app.use(cookieParser());
   app.enableCors({
     origin: 'http://localhost:3000',

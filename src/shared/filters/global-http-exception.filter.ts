@@ -9,9 +9,9 @@ import { Response } from 'express';
 import { ERROR_CODES } from 'src/shared/utils/response.util';
 import { BaseExceptionErrorStateInferface } from 'src/shared/types/common.type';
 
-@Catch()
-export class GlobalRequestExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(GlobalRequestExceptionFilter.name);
+@Catch(HttpException)
+export class GlobalHttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(GlobalHttpExceptionFilter.name);
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const httpContext = host.switchToHttp();

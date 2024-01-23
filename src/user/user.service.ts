@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { Observable, from } from 'rxjs';
+import { Observable, catchError, from, mergeMap, of, throwError } from 'rxjs';
+import { PrismaException } from 'src/shared/exceptions/prisma.exception';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
@@ -18,15 +19,21 @@ export class UserService {
   }
 
   initUser(dto: { userSeq: string }): Observable<User> {
-    return from(
-      this.prisma.user.create({
-        data: {
-          userSeq: dto.userSeq,
-          rank: {
-            create: {},
-          },
-        },
+    return this.findUser(dto).pipe(
+      mergeMap((user) => {
+        if (user) return of(user);
+        return from(
+          this.prisma.user.create({
+            data: {
+              userSeq: dto.userSeq,
+              rank: {
+                create: true,
+              },
+            },
+          }),
+        );
       }),
+      catchError((err) => throwError(() => new PrismaException(err))),
     );
   }
 
