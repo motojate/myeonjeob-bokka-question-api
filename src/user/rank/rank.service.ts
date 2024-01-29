@@ -7,7 +7,6 @@ export class RankService {
   constructor(private readonly prisma: PrismaService) {}
 
   findRank(dto: { userSeq: string }) {
-    console.log(dto);
     return from(
       this.prisma.rank.findUnique({ where: { userSeq: dto.userSeq } }),
     ).pipe(

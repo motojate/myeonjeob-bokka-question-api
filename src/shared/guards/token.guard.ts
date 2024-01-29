@@ -30,7 +30,6 @@ export class TokenGuard implements CanActivate {
 
   private async validateToken(tokens: HeaderToken) {
     const url = this.configService.get<string>('LOCAL_JWT_CHECK_URL');
-    console.log(tokens);
     return axios.post<string>(url, { tokens });
   }
 }

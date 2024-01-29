@@ -13,7 +13,6 @@ export class UserInitInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const userSeq = request.userSeq;
-    console.log(userSeq);
     return this.userService.findUser({ userSeq }).pipe(
       switchMap((user) => {
         if (!user)
