@@ -21,8 +21,6 @@ export class GlobalAxiosExceptionFilter implements ExceptionFilter {
     const { method, url } = request;
     const status = exception.response.status;
     const exceptionResponse = exception.response.data;
-    console.log(exceptionResponse);
-    console.log(exception.response.status);
     const { code, message } = this.getExceptionMessage(exceptionResponse);
 
     this.logger.error(
