@@ -64,8 +64,8 @@ model Rank {
 
 model RankTier {
   id        Int      @id @unique @default(autoincrement())
-  tier      Tier     @default(BRONZE)
-  tierName  String   @default("브론즈") @map("tier_name")
+  tier      Tier
+  tierName  String   @map("tier_name")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   rank      Rank[]
