@@ -50,15 +50,27 @@ model Friend {
 
 model Rank {
   id        Int      @id @unique @default(autoincrement())
-  tier      Tier     @default(BRONZE)
   score     Int      @default(0)
   reBirth   Int      @default(0) @map("re_birth")
-  user      User     @relation(fields: [userSeq], references: [userSeq], onDelete: Cascade)
   userSeq   String   @unique @map("user_seq")
+  tierId    Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  tier      RankTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userSeq], references: [userSeq], onDelete: Cascade)
 
   @@map("BK_MB_RANK")
+}
+
+model RankTier {
+  id        Int      @id @unique @default(autoincrement())
+  tier      Tier     @default(BRONZE)
+  tierName  String   @default("브론즈") @map("tier_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  rank      Rank[]
+
+  @@map("BK_MB_RANK_TIER")
 }
 
 model QuestionLearningManage {
