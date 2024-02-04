@@ -85,5 +85,5 @@ model QuestionLearningManage {
 
   @@unique([userSeq, questionSeq], name: "historySeq")
   @@index([userSeq])
-  @@map("BK_MB_QUESTION_LEARNING_Manage")
+  @@map("BK_MB_QUESTION_LEARNING_MANAGE")
 }
