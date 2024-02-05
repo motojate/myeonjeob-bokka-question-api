@@ -9,6 +9,6 @@ export class RankController {
   @Get()
   @UseGuards(TokenGuard)
   findRank(@Req() req: AuthenticationExpressRequest) {
-    return this.rankService.findRank({ userSeq: req.userSeq });
+    return this.rankService.findUserRank({ userSeq: req.userSeq });
   }
 }

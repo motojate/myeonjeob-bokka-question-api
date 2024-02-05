@@ -1,22 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { from, map } from 'rxjs';
+import { PrismaException } from 'src/shared/exceptions/prisma.exception';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
 export class RankService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findRank(dto: { userSeq: string }) {
-    return from(
-      this.prisma.rank.findUnique({ where: { userSeq: dto.userSeq } }),
-    ).pipe(
-      map((data) => {
-        return {
-          tier: data.tier,
-          score: data.score,
-          reBirth: data.reBirth,
-        };
-      }),
-    );
+  async findUserRank(dto: { userSeq: string }) {
+    try {
+      const userRank = await this.prisma.rank.findUnique({
+        where: {
+          userSeq: dto.userSeq,
+        },
+        include: {
+          rankTier: true,
+        },
+      });
+      const ranks = await this.prisma.rank.findMany({
+        where: {
+          tier: userRank.tier,
+        },
+        include: {
+          rankTier: true,
+        },
+      });
+      return {
+        userTier: userRank,
+        ranks: ranks,
+      };
+    } catch (e) {
+      throw new PrismaException(e);
+    }
   }
 }

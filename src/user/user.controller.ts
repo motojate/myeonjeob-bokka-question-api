@@ -7,7 +7,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { TokenGuard } from 'src/shared/guards/token.guard';
-import { UserInitInterceptor } from 'src/shared/interceptors/user-init.interceptor';
 import { AuthenticationExpressRequest } from 'src/shared/types/common.type';
 import { UserService } from './user.service';
 import { map } from 'rxjs';
@@ -19,10 +18,8 @@ export class UserController {
   @Post('init')
   @HttpCode(200)
   @UseGuards(TokenGuard)
-  @UseInterceptors(UserInitInterceptor)
-  findRank(@Req() req: AuthenticationExpressRequest) {
-    return this.userService
-      .initUser({ userSeq: req.userSeq })
-      .pipe(map((user) => BaseResponse.success(user)));
+  async initUser(@Req() req: AuthenticationExpressRequest) {
+    const result = await this.userService.initUser({ userSeq: req.userSeq });
+    return BaseResponse.success(result);
   }
 }
