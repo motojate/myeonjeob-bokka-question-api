@@ -6,23 +6,23 @@ import { PrismaService } from 'src/shared/prisma/prisma.service';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findUser(dto: { userSeq: string }) {
-    try {
-      return this.prisma.user.findUnique({
-        where: {
-          userSeq: dto.userSeq,
-        },
-      });
-    } catch (e) {
-      throw new PrismaException(e);
-    }
+  async findUserName(dto: { userSeq: string }) {
+    return this.prisma.user.findUnique({
+      where: {
+        userSeq: dto.userSeq,
+      },
+      select: {
+        name: true,
+      },
+    });
   }
 
-  async initUser(dto: { userSeq: string }) {
+  async initUser(dto: { name: string; userSeq: string }) {
     try {
       return this.prisma.user.create({
         data: {
           userSeq: dto.userSeq,
+          name: dto.name,
           rank: {
             create: {
               tier: 'BRONZE',
