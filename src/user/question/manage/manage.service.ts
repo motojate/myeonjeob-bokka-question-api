@@ -5,22 +5,13 @@ import { CrudService } from 'src/shared/abstracts/crud.abstarct';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
-export class ManageService extends CrudService<
-  QuestionLearningManage,
-  Prisma.QuestionLearningManageCreateInput,
-  Prisma.QuestionLearningManageUpdateInput
-> {
-  create(dto: Prisma.QuestionLearningManageCreateInput): Observable<{
-    userSeq: string;
-    questionSeq: string;
-    score: number;
-    retryCount: number;
-    isShow: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }> {
-    throw new Error('Method not implemented.');
+export class ManageService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(dto: Prisma.QuestionLearningManageCreateInput) {
+    console.log(dto);
   }
+
   findAll(): Observable<
     {
       userSeq: string;
@@ -69,8 +60,5 @@ export class ManageService extends CrudService<
     updatedAt: Date;
   }> {
     throw new Error('Method not implemented.');
-  }
-  constructor(private readonly prisma: PrismaService) {
-    super();
   }
 }
