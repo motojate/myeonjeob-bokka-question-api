@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, QuestionLearningManage } from '@prisma/client';
-import { Observable, from } from 'rxjs';
-import { CrudService } from 'src/shared/abstracts/crud.abstarct';
+import { Prisma } from '@prisma/client';
+import { Observable } from 'rxjs';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
