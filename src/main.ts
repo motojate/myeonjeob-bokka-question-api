@@ -5,6 +5,11 @@ import { LoggingInterceptor } from 'src/shared/interceptors/logging.interceptor'
 import { GlobalHttpExceptionFilter } from 'src/shared/filters/global-http-exception.filter';
 import { GlobalAxiosExceptionFilter } from 'src/shared/filters/global-axios-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  KafkaOptions,
+  MicroserviceOptions,
+  Transport,
+} from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +34,20 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'bokka-question-client',
+        brokers: ['127.0.0.1:9092'], // Kafka 브로커 주소
+      },
+      consumer: {
+        groupId: 'bokka-question-group',
+      },
+    },
+  });
+
+  await app.startAllMicroservices();
   await app.listen(3500);
 }
 bootstrap();

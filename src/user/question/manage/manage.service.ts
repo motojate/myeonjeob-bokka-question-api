@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { ManageCreateInputDto } from './dtos/manage.input.dto';
 
 @Injectable()
 export class ManageService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: Prisma.QuestionLearningManageCreateInput) {
+  async create(dto: ManageCreateInputDto) {
     console.log(dto);
   }
 

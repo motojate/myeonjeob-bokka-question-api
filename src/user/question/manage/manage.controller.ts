@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { TokenGuard } from 'src/shared/guards/token.guard';
 import { AuthenticationExpressRequest } from 'src/shared/types/common.type';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ManageCreateInputDto } from './dtos/manage.input.dto';
 
 @ApiTags('manage')
 @Controller('manage')
@@ -15,8 +16,8 @@ export class ManageController {
   @ApiResponse({ status: 200, description: '학습 이력 저장' })
   createHistory(
     @Req() req: AuthenticationExpressRequest,
-    @Body() historyDto: Prisma.QuestionLearningManageCreateInput,
+    @Body() manageCreateInputDto: ManageCreateInputDto,
   ) {
-    return this.historyService.create(historyDto);
+    return this.historyService.create(manageCreateInputDto);
   }
 }
