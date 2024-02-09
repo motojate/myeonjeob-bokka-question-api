@@ -1,7 +1,10 @@
 type ResponseCodeType = 'SUCCESS' | 'EMPTY_DATA';
 type CommonErrorCodeType = 'BAD_REQUEST' | 'NETWORK_ERROR';
 type TokenErrorCodeType = 'NULL_TOKEN' | 'EXPIRED_TOKEN' | 'INVALID_TOKEN';
-type AuthErrorCodeType = 'INVALID_USER' | 'PASSWORD_FAILED';
+type AuthErrorCodeType =
+  | 'INVALID_USER'
+  | 'PASSWORD_FAILED'
+  | 'IN_USED_USER_NAME';
 type UnknownErrorCodeType = 'UNKNOWN_ERROR';
 type ErrorCodeType =
   | CommonErrorCodeType
@@ -20,6 +23,7 @@ export const ERROR_CODES: { [key in ErrorCodeType]: number } = {
 
   INVALID_USER: 3001,
   PASSWORD_FAILED: 3002,
+  IN_USED_USER_NAME: 3003,
 
   NULL_TOKEN: 5000,
   INVALID_TOKEN: 5001,

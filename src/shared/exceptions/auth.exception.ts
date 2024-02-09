@@ -8,6 +8,16 @@ export class InvalidAuthException extends BaseException {
   }
 }
 
+export class InUsedUserNameException extends BaseException {
+  constructor() {
+    super(
+      ERROR_CODES.IN_USED_USER_NAME,
+      'IN_USED_USER_NAME',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+
 export class InvalidPasswordException extends BaseException {
   constructor() {
     super(

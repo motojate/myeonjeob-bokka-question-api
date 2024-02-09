@@ -5,11 +5,7 @@ import { LoggingInterceptor } from 'src/shared/interceptors/logging.interceptor'
 import { GlobalHttpExceptionFilter } from 'src/shared/filters/global-http-exception.filter';
 import { GlobalAxiosExceptionFilter } from 'src/shared/filters/global-axios-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import {
-  KafkaOptions,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

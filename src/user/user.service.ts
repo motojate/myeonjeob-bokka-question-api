@@ -1,25 +1,61 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaException } from 'src/shared/exceptions/prisma.exception';
+import {
+  Observable,
+  catchError,
+  delay,
+  from,
+  map,
+  mergeMap,
+  of,
+  retry,
+  throwError,
+} from 'rxjs';
+import { USER_RANDOM_NAME } from 'src/shared/constants/data.constant';
+import { InUsedUserNameException } from 'src/shared/exceptions/auth.exception';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findUserName(dto: { userSeq: string }) {
-    return this.prisma.user.findUnique({
-      where: {
-        userSeq: dto.userSeq,
-      },
-      select: {
-        name: true,
-      },
-    });
+  private generateUserName(): string {
+    const randomName =
+      USER_RANDOM_NAME[Math.floor(Math.random() * USER_RANDOM_NAME.length)];
+    const randomNumber = Math.floor(Math.random() * 10000000);
+    const formattedNumber = randomNumber.toString().padStart(7, '0');
+    return `${randomName}${formattedNumber}`;
   }
 
-  async initUser(dto: { name: string; userSeq: string }) {
-    try {
-      return this.prisma.user.create({
+  private checkUserNameUnique(userName: string): Observable<boolean> {
+    return from(this.prisma.user.count({ where: { name: userName } })).pipe(
+      map((count) => count === 0),
+    );
+  }
+
+  findUserName(dto: { userSeq: string }): Observable<{ name: string }> {
+    return from(
+      this.prisma.user.findUnique({
+        where: {
+          userSeq: dto.userSeq,
+        },
+        select: {
+          name: true,
+        },
+      }),
+    ).pipe(
+      mergeMap((user) => {
+        if (user) return of({ name: user.name });
+        else return this.retryGenerateUserName(dto);
+      }),
+    );
+  }
+
+  private initUser(dto: {
+    name: string;
+    userSeq: string;
+  }): Observable<{ name: string }> {
+    return from(
+      this.prisma.user.create({
         data: {
           userSeq: dto.userSeq,
           name: dto.name,
@@ -29,9 +65,40 @@ export class UserService {
             },
           },
         },
-      });
-    } catch (e) {
-      throw new PrismaException(e);
-    }
+        select: {
+          name: true,
+        },
+      }),
+    );
+  }
+
+  private retryGenerateUserName(dto: { userSeq: string }) {
+    const maxRetries = 3;
+
+    return of(null).pipe(
+      mergeMap(() => {
+        return this.createUniqueUserName(dto).pipe(
+          retry(maxRetries),
+          catchError((e) => throwError(() => e)),
+        );
+      }),
+    );
+  }
+
+  private createUniqueUserName(dto: {
+    userSeq: string;
+  }): Observable<{ name: string }> {
+    const generateUserName = this.generateUserName();
+    return this.checkUserNameUnique(generateUserName).pipe(
+      mergeMap((isUnique) =>
+        isUnique
+          ? this.initUser({
+              name: generateUserName,
+              userSeq: dto.userSeq,
+            })
+          : throwError(() => new InUsedUserNameException()),
+      ),
+      delay(1000),
+    );
   }
 }
