@@ -1,18 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import {
-  Observable,
-  catchError,
-  delay,
-  from,
-  map,
-  mergeMap,
-  of,
-  retry,
-  throwError,
-} from 'rxjs';
+import { Observable, from, map, mergeMap, of, retry, throwError } from 'rxjs';
 import { USER_RANDOM_NAME } from 'src/shared/constants/data.constant';
 import { InUsedUserNameException } from 'src/shared/exceptions/auth.exception';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
+import { UserNameInterface } from 'src/shared/types/user.type';
 
 @Injectable()
 export class UserService {
@@ -32,7 +23,7 @@ export class UserService {
     );
   }
 
-  findUserName(dto: { userSeq: string }): Observable<{ name: string }> {
+  findUserName(dto: { userSeq: string }): Observable<UserNameInterface> {
     return from(
       this.prisma.user.findUnique({
         where: {
@@ -53,7 +44,7 @@ export class UserService {
   private initUser(dto: {
     name: string;
     userSeq: string;
-  }): Observable<{ name: string }> {
+  }): Observable<UserNameInterface> {
     return from(
       this.prisma.user.create({
         data: {
@@ -72,33 +63,38 @@ export class UserService {
     );
   }
 
-  private retryGenerateUserName(dto: { userSeq: string }) {
+  private retryGenerateUserName(dto: {
+    userSeq: string;
+  }): Observable<UserNameInterface> {
     const maxRetries = 3;
 
     return of(null).pipe(
       mergeMap(() => {
-        return this.createUniqueUserName(dto).pipe(
-          retry(maxRetries),
-          catchError((e) => throwError(() => e)),
-        );
+        return this.createUniqueUserName(dto).pipe(retry(maxRetries));
       }),
     );
   }
 
   private createUniqueUserName(dto: {
     userSeq: string;
-  }): Observable<{ name: string }> {
-    const generateUserName = this.generateUserName();
-    return this.checkUserNameUnique(generateUserName).pipe(
-      mergeMap((isUnique) =>
-        isUnique
-          ? this.initUser({
-              name: generateUserName,
-              userSeq: dto.userSeq,
-            })
-          : throwError(() => new InUsedUserNameException()),
-      ),
-      delay(1000),
+  }): Observable<UserNameInterface> {
+    return of(dto).pipe(
+      map((dto) => ({
+        ...dto,
+        name: this.generateUserName(),
+      })),
+      mergeMap((dtoWithName) => {
+        return this.checkUserNameUnique(dtoWithName.name).pipe(
+          mergeMap((isUnique) =>
+            isUnique
+              ? this.initUser({
+                  name: dtoWithName.name,
+                  userSeq: dto.userSeq,
+                })
+              : throwError(() => new InUsedUserNameException()),
+          ),
+        );
+      }),
     );
   }
 }

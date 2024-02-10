@@ -1,5 +1,5 @@
 import { Request } from 'express';
-
+export * from './user.type';
 export interface AuthenticationExpressRequest extends Request {
   userSeq: string;
 }
