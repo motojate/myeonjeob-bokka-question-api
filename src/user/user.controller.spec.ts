@@ -19,6 +19,4 @@ describe('UserController', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  // 여기에 추가 테스트 케이스 작성
 });
