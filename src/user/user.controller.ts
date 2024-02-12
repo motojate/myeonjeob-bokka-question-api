@@ -8,10 +8,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TokenGuard } from 'src/shared/guards/token.guard';
-import { AuthenticationExpressRequest } from 'src/shared/types/common.type';
+import {
+  AuthenticationExpressRequest,
+  UserNameInterface,
+} from 'src/shared/types/common.type';
 import { UserService } from './user.service';
 import { BaseResponse } from 'src/shared/responses/base.response';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Controller('user')
 export class UserController {
@@ -20,13 +23,15 @@ export class UserController {
   @Get('name')
   @HttpCode(200)
   @UseGuards(TokenGuard)
-  async getUserNameAndInit(@Req() req: AuthenticationExpressRequest) {
+  getUserNameAndInit(
+    @Req() req: AuthenticationExpressRequest,
+  ): Observable<BaseResponse<UserNameInterface>> {
     return this.userService
       .findUserName({
         userSeq: req.userSeq,
       })
       .pipe(
-        map((userName) => BaseResponse.success<{ name: string }>(userName)),
+        map((userName) => BaseResponse.success<UserNameInterface>(userName)),
       );
   }
 }
