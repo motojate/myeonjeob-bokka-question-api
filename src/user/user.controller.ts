@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
-  Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -29,6 +29,23 @@ export class UserController {
     return this.userService
       .findUserName({
         userSeq: req.userSeq,
+      })
+      .pipe(
+        map((userName) => BaseResponse.success<UserNameInterface>(userName)),
+      );
+  }
+
+  @Put('name')
+  @HttpCode(200)
+  @UseGuards(TokenGuard)
+  updateUserName(
+    @Req() req: AuthenticationExpressRequest,
+    @Body() name: string,
+  ): Observable<BaseResponse<UserNameInterface>> {
+    return this.userService
+      .updateUserName({
+        userSeq: req.userSeq,
+        name: name,
       })
       .pipe(
         map((userName) => BaseResponse.success<UserNameInterface>(userName)),

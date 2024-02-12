@@ -97,4 +97,23 @@ export class UserService {
       }),
     );
   }
+
+  updateUserName(dto: {
+    userSeq: string;
+    name: string;
+  }): Observable<UserNameInterface> {
+    return from(
+      this.prisma.user.update({
+        where: {
+          userSeq: dto.userSeq,
+        },
+        data: {
+          name: dto.name,
+        },
+        select: {
+          name: true,
+        },
+      }),
+    );
+  }
 }
