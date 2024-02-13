@@ -30,18 +30,18 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'bokka-question-client',
-        brokers: ['127.0.0.1:9092'], // Kafka 브로커 주소
-      },
-      consumer: {
-        groupId: 'bokka-question-group',
-      },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.KAFKA,
+  //   options: {
+  //     client: {
+  //       clientId: 'bokka-question-client',
+  //       brokers: ['kafka:9092'],
+  //     },
+  //     consumer: {
+  //       groupId: 'bokka-question-group',
+  //     },
+  //   },
+  // });
 
   // await app.startAllMicroservices();
   await app.listen(3500);
