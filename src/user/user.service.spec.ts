@@ -7,7 +7,6 @@ describe('UserService', () => {
   let prismaService: PrismaService;
 
   beforeEach(async () => {
-    // 모의 PrismaService 생성
     const mockPrismaService = {
       user: {
         findUnique: jest.fn().mockImplementation((dto) => {
@@ -36,6 +35,4 @@ describe('UserService', () => {
     const result = await userService.findUserName({ userSeq }).toPromise();
     expect(result).toEqual({ name: 'existing-user-name' });
   });
-
-  // 여기에 더 많은 테스트 케이스를 추가할 수 있습니다.
 });
