@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { from, map } from 'rxjs';
