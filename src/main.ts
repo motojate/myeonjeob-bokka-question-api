@@ -35,7 +35,7 @@ async function bootstrap() {
     options: {
       client: {
         clientId: 'bokka-question-client',
-        brokers: ['kafka:9092'],
+        brokers: ['127.0.0.1:9092'],
       },
       consumer: {
         groupId: 'bokka-question-group',
